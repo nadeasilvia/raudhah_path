@@ -7,16 +7,20 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // --- Halaman Utama & Fitur Utama ---
-$routes->get('/', 'Home::index');           // Mode: Home
-$routes->get('packages', 'Home::packages');  // Mode: Packages (List & Filter)
-$routes->get('about', 'Home::about');        // Mode: About Us
-$routes->get('contact', 'Home::contact');    // Mode: Contact Us (WAJIB ADA BIAR BISA DIPENCET)
+$routes->get('/', 'Home::index');            // Mode: Home
+$routes->get('packages', 'Home::packages');   // Mode: Packages (List & Filter)
+$routes->get('about', 'Home::about');         // Mode: About Us
+$routes->get('contact', 'Home::contact');     // Mode: Contact Us
+
+// --- Link Baru dari Kartu Fitur (Home) ---
+$routes->get('travel/resmi', 'Home::packages');    // Mengarah ke list paket resmi
+$routes->get('bandingkan/paket', 'Home::packages'); // Mengarah ke list perbandingan
 
 // --- Detail Paket ---
-$routes->get('packages/detail/(:num)', 'Home::detail/$1'); // Biar tombol Detail jalan
+$routes->get('packages/detail/(:num)', 'Home::detail/$1'); 
 
 // --- Halaman Lainnya ---
-$routes->get('umrah', 'UmrahController::index');
+$routes->get('umrah', 'Home::index');
 
 // --- Fitur AI ---
 $routes->get('ai', 'Ai::index');

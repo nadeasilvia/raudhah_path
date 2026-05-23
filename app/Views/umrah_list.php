@@ -63,16 +63,16 @@
 
         <section class="container mx-auto px-6 md:px-12 -mt-24 relative z-10">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                <div class="bg-white p-8 rounded-[32px] shadow-xl border border-gray-50 flex flex-col items-center group hover:-translate-y-2 transition-all">
-                    <span class="text-3xl mb-5">🛡️</span>
-                    <h3 class="font-bold text-[#1e3a5a] text-lg mb-2">Travel Resmi</h3>
-                    <p class="text-xs text-gray-400 leading-relaxed">Terdaftar resmi di Kemenag RI.</p>
-                </div>
-                <div class="bg-white p-8 rounded-[32px] shadow-xl border border-gray-50 flex flex-col items-center group hover:-translate-y-2 transition-all">
-                    <span class="text-3xl mb-5">✨</span>
-                    <h3 class="font-bold text-[#1e3a5a] text-lg mb-2">Perbandingan Mudah</h3>
-                    <p class="text-xs text-gray-400 leading-relaxed">Temukan harga terbaik dengan filter cerdas.</p>
-                </div>
+                <a href="<?= base_url('packages?type=resmi') ?>" class="bg-white p-8 rounded-[32px] shadow-xl border border-gray-50 flex flex-col items-center group hover:-translate-y-2 transition-all cursor-pointer">
+                <span class="text-3xl mb-5">🛡️</span>
+                <h3 class="font-bold text-[#1e3a5a] text-lg mb-2">Travel Resmi</h3>
+                <p class="text-xs text-gray-400 leading-relaxed">Terdaftar resmi di Kemenag RI.</p>
+            </a>
+               <a href="<?= base_url('packages') ?>" class="bg-white p-8 rounded-[32px] shadow-xl border border-gray-50 flex flex-col items-center group hover:-translate-y-2 transition-all cursor-pointer">
+                <span class="text-3xl mb-5">✨</span>
+                <h3 class="font-bold text-[#1e3a5a] text-lg mb-2">Perbandingan Mudah</h3>
+                <p class="text-xs text-gray-400 leading-relaxed">Temukan harga terbaik dengan filter cerdas.</p>
+            </a>
                 <div class="bg-white p-8 rounded-[32px] shadow-xl border border-gray-50 flex flex-col items-center group hover:-translate-y-2 transition-all border-2 border-transparent hover:border-[#c29047]" 
                     onclick="toggleAI()" 
                     style="cursor: pointer;"> <span class="text-3xl mb-5">🤖</span>
