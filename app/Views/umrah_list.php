@@ -93,31 +93,49 @@
 
         <section class="container mx-auto px-6 md:px-12 -mt-16 relative z-10">
             <div class="bg-white p-7 rounded-[35px] shadow-2xl shadow-gray-200/50 border border-gray-50">
-                <form action="<?= base_url('packages') ?>" method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+                <form id="filterForm" action="<?= base_url('packages') ?>" method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
                     <div>
                         <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2 block">Jenis Paket</label>
-                        <select name="paket_type" class="w-full bg-gray-50 border-none rounded-2xl py-3.5 px-4 text-sm font-bold text-[#1e3a5a]">
+                        <select id="paket_type" class="w-full bg-gray-50 border-none rounded-2xl py-3.5 px-4 text-sm font-bold text-[#1e3a5a]">
                             <option value="">Semua Paket</option>
-                            <option value="Reguler" <?= (request()->getGet('paket_type') == 'Reguler') ? 'selected' : '' ?>>Reguler</option>
-                            <option value="Plus" <?= (request()->getGet('paket_type') == 'Plus') ? 'selected' : '' ?>>Plus</option>
+                            <?php foreach ($kategori as $k): ?>
+                                <option value="<?= $k['kategori'] ?>" <?= (request()->getGet('paket_type') == $k['kategori']) ? 'selected' : '' ?>>
+                                    <?= ucfirst($k['kategori']) ?>
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div>
                         <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2 block">Durasi</label>
-                        <select name="durasi" class="w-full bg-gray-50 border-none rounded-2xl py-3.5 px-4 text-sm font-bold text-[#1e3a5a]">
-                            <option value="">Semua</option>
-                            <option value="9" <?= (request()->getGet('durasi') == '9') ? 'selected' : '' ?>>9 Hari</option>
-                            <option value="12" <?= (request()->getGet('durasi') == '12') ? 'selected' : '' ?>>12 Hari</option>
-                        </select>
+                        <select id="durasi" class="w-full bg-gray-50 border-none rounded-2xl py-3.5 px-4 text-sm font-bold text-[#1e3a5a]">
+                            <option value="">Semua Durasi</option>
+                        <?php if (!empty($durasi)): ?>
+                            <?php foreach ($durasi as $d): ?>
+                                <option value="<?= $d['durasi_hari'] ?>" <?= (request()->getGet('durasi') == $d['durasi_hari']) ? 'selected' : '' ?>>
+                                    <?= $d['durasi_hari'] ?> Hari
+                                </option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="">Data Kosong</option>
+                        <?php endif; ?>
+                    </select>
                     </div>
                     <div>
                         <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2 block">Maskapai</label>
-                        <select name="maskapai" class="w-full bg-gray-50 border-none rounded-2xl py-3.5 px-4 text-sm font-bold text-[#1e3a5a]">
+                        <select id="maskapai" class="w-full bg-gray-50 border-none rounded-2xl py-3.5 px-4 text-sm font-bold text-[#1e3a5a]">
                             <option value="">Semua Maskapai</option>
-                            <?php if(!empty($all_airlines)): foreach($all_airlines as $a): ?>
-                                <option value="<?= $a->id ?>" <?= (request()->getGet('maskapai') == $a->id) ? 'selected' : '' ?>><?= $a->nama_maskapai ?></option>
-                            <?php endforeach; endif; ?>
-                        </select>
+        
+                        <?php if (!empty($all_airlines)): ?>
+                            <?php foreach ($all_airlines as $a): ?>
+                                <option value="<?= $a->id ?>" <?= (request()->getGet('maskapai') == $a->id) ? 'selected' : '' ?>>
+                                    <?= $a->nama_maskapai ?>
+                                </option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="">Data Maskapai Kosong</option>
+                        <?php endif; ?>
+                        
+                    </select>
                     </div>
                     <div>
                         <label class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2 block">Cari Paket</label>
@@ -125,9 +143,55 @@
                     </div>
                     <button type="submit" class="bg-[#1e3a5a] text-white py-3.5 rounded-2xl font-bold text-sm hover:bg-[#c29047] transition-all shadow-lg">Cari Paket</button>
                 </form>
+                <div id="activeFiltersContainer" class="mt-8 pt-6 border-t border-gray-100/50 flex flex-wrap items-center gap-3 hidden">
+                <span class="text-[10px] text-gray-400 font-bold uppercase mr-2">Filter aktif:</span>
+                <div id="filterList" class="flex flex-wrap gap-2">
+                    </div>
+                <button type="button" onclick="resetAllFilters()" class="flex items-center gap-2 text-[11px] font-bold text-blue-600 hover:text-[#c29047] transition-all ml-2 group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 stroke-current fill-none group-hover:rotate-[-45deg] transition-transform duration-300" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                        <path d="M3 3v5h5"/>
+                    </svg>
+                    <span class="tracking-wide">Reset Filter</span>
+                </button>
+            </div>
             </div>
         </section>
     <?php endif; ?>
+
+<section class="container mx-auto px-6 md:px-12 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <?php if (!empty($packages)): ?>
+                    <?php foreach ($packages as $p): ?>
+    <a href="<?= base_url('packages/detail/' . $p->id) ?>" class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden card-hover transition-all block group">
+        <div class="h-48 bg-gray-200 relative">
+            <img src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=400" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold text-[#1e3a5a] uppercase">
+                <?= $p->kategori ?>
+            </div>
+        </div>
+        <div class="p-5">
+            <h3 class="font-bold text-[#1e3a5a] mb-2 group-hover:text-[#c29047] transition-colors"><?= $p->nama_paket ?></h3>
+            <p class="text-xs text-gray-400 mb-4"><?= $p->nama_maskapai ?> • <?= $p->durasi_hari ?> Hari</p>
+            <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-50">
+                <div>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase">Mulai Dari</p>
+                    <p class="font-bold text-[#c29047]">Rp <?= number_format($p->harga_jual, 0, ',', '.') ?></p>
+                </div>
+                <div class="bg-[#1e3a5a] text-white p-2.5 rounded-xl group-hover:bg-[#c29047] transition-all">
+                    →
+                </div>
+            </div>
+        </div>
+    </a>
+<?php endforeach; ?>
+                <?php else: ?>
+                    <div class="col-span-full text-center py-20">
+                        <p class="text-gray-400 font-bold italic text-lg">Paket "<?= esc($keyword ?? '') ?>" tidak ditemukan.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </section>
 
     <?php if ($view == 'about'): ?>
         <header class="packages-header pt-24 pb-16">
@@ -751,7 +815,7 @@
 
                         <div class="flex justify-between items-center border-t border-gray-50 pt-5 mt-auto">
                             <div>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Mulai Dari</p>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Harga Paket</p>
                                 <p class="text-xl font-extrabold text-[#1e3a5a] uppercase tracking-tighter">
                                     Rp <?= number_format((float)$p->harga_jual, 0, ',', '.') ?>
                                 </p>
@@ -883,92 +947,132 @@
 </div>
 
 <script>
+    // --- INISIALISASI VARIABEL GLOBAL ---
     const inputField = document.getElementById('user-input');
     const chatWindow = document.getElementById('chat-window');
     const selects = document.querySelectorAll('#filterForm select');
     const filterList = document.getElementById('filterList');
     const container = document.getElementById('activeFiltersContainer');
-    
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const filterLabels = {
+        'search': 'Cari',
+        'paket_type': 'Tipe',
+        'durasi': 'Durasi',
+        'maskapai': 'Maskapai'
+    };
+
+    // --- EVENT DOM CONTENT LOADED ---
     document.addEventListener('DOMContentLoaded', function() {
-    const checkboxes = document.querySelectorAll('.compare-card input[type="checkbox"]');
-    const compareCountDisplay = document.getElementById('compare-count');
-
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const checkedCount = document.querySelectorAll('.compare-card input[type="checkbox"]:checked').length;
-            
-            // Logika Maksimal 3
-            if (checkedCount > 3) {
-                alert("Maksimal pilih 3 paket untuk dibandingkan.");
-                this.checked = false;
-                return;
-            }
-
-            // Update UI
-            compareCountDisplay.innerText = checkedCount;
-
-            // Tambahkan efek visual jika tidak dipilih
-            const card = this.closest('.compare-card');
-            if (!this.checked) {
-                card.classList.add('opacity-40', 'grayscale');
-            } else {
-                card.classList.remove('opacity-40', 'grayscale');
+        // 1. Inisialisasi Filter Berdasarkan URL (Script Tambahanmu)
+        let hasFilter = false;
+        urlParams.forEach((value, key) => {
+            if (value && filterLabels[key]) {
+                hasFilter = true;
+                const badge = document.createElement('div');
+                badge.className = "flex items-center gap-2 bg-blue-50 text-[#1e3a5a] px-3 py-1 rounded-full text-[11px] font-bold border border-blue-100";
+                
+                let displayValue = value;
+                if(key === 'durasi') displayValue += ' Hari';
+                
+                badge.innerHTML = `
+                    <span class="opacity-60">${filterLabels[key]}:</span>
+                    <span>${displayValue}</span>
+                `;
+                if (filterList) filterList.appendChild(badge);
             }
         });
-    });
-});
-    function updateFilters() {
-    filterList.innerHTML = ''; // Bersihkan list chip
-    let hasActive = false;
 
-    selects.forEach(select => {
-        if (select.value !== "") {
-            hasActive = true;
-            const label = select.previousElementSibling.innerText;
-            const valueText = select.options[select.selectedIndex].text;
-
-            // Buat Chip
-            const chip = document.createElement('div');
-            chip.className = "flex items-center gap-2 bg-blue-50/50 border border-blue-100 px-3 py-1.5 rounded-full";
-            chip.innerHTML = `
-                <span class="text-[10px] font-bold text-[#1e3a5a]">${label}: ${valueText}</span>
-                <button type="button" onclick="clearFilter('${select.id}')" class="text-blue-400 hover:text-red-500 text-xs">✕</button>
-            `;
-            filterList.appendChild(chip);
+        if (hasFilter && container) {
+            container.classList.remove('hidden');
         }
+
+        // 2. Logika Perbandingan Paket (Maksimal 3)
+        const checkboxes = document.querySelectorAll('.compare-card input[type="checkbox"]');
+        const compareCountDisplay = document.getElementById('compare-count');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const checkedCount = document.querySelectorAll('.compare-card input[type="checkbox"]:checked').length;
+                
+                if (checkedCount > 3) {
+                    alert("Maksimal pilih 3 paket untuk dibandingkan.");
+                    this.checked = false;
+                    return;
+                }
+
+                if (compareCountDisplay) compareCountDisplay.innerText = checkedCount;
+
+                const card = this.closest('.compare-card');
+                if (card) {
+                    if (!this.checked) {
+                        card.classList.add('opacity-40', 'grayscale');
+                    } else {
+                        card.classList.remove('opacity-40', 'grayscale');
+                    }
+                }
+            });
+        });
+
+        // 3. Inisialisasi Filter Chips Awal
+        updateFilters();
     });
 
-    // Munculkan/Sembunyikan container filter aktif
-    container.classList.toggle('hidden', !hasActive);
-}
+    // --- FUNGSI UPDATE FILTERS (DARI SCRIPT AWAL) ---
+    function updateFilters() {
+        if (!filterList) return;
+        
+        // Agar tidak duplikat dengan badge dari URL, kita bersihkan dulu
+        // atau biarkan logic URL yang menangani saat load pertama
+        let hasActive = false;
 
-// Fungsi untuk hapus per item (klik silang)
-function clearFilter(id) {
-    document.getElementById(id).value = "";
-    updateFilters();
-}
+        selects.forEach(select => {
+            if (select.value !== "") {
+                hasActive = true;
+                const label = select.previousElementSibling ? select.previousElementSibling.innerText : "Filter";
+                const valueText = select.options[select.selectedIndex].text;
 
-// Fungsi untuk reset semua
-function resetAllFilters() {
-    selects.forEach(select => select.value = "");
-    updateFilters();
-}
+                const chip = document.createElement('div');
+                chip.className = "flex items-center gap-2 bg-blue-50/50 border border-blue-100 px-3 py-1.5 rounded-full";
+                chip.innerHTML = `
+                    <span class="text-[10px] font-bold text-[#1e3a5a]">${label}: ${valueText}</span>
+                    <button type="button" onclick="clearFilter('${select.id}')" class="text-blue-400 hover:text-red-500 text-xs">✕</button>
+                `;
+                filterList.appendChild(chip);
+            }
+        });
 
-// Jalankan fungsi setiap kali ada perubahan di select
-selects.forEach(select => {
-    select.addEventListener('change', updateFilters);
-});
-
-// Jalankan sekali saat halaman load untuk cek filter yang sudah ada (jika ada)
-updateFilters();
-
-    function toggleAI() {
-        const modal = document.getElementById('ai-modal');
-        modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
-        if (modal.style.display === 'flex') inputField.focus();
+        if (container) container.classList.toggle('hidden', !hasActive && !urlParams.has('search'));
     }
 
-    // --- FITUR SUARA (TEXT TO SPEECH) ---
+    function clearFilter(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.value = "";
+            updateFilters();
+        }
+    }
+
+    function resetAllFilters() {
+        // Gabungan: Kosongkan select DAN redirect untuk membersihkan URL
+        if (selects) selects.forEach(select => select.value = "");
+        window.location.href = "<?= base_url('packages') ?>";
+    }
+
+    // Jalankan updateFilters saat ada perubahan di select
+    selects.forEach(select => {
+        select.addEventListener('change', updateFilters);
+    });
+
+    // --- FITUR AI & MODAL ---
+    function toggleAI() {
+        const modal = document.getElementById('ai-modal');
+        if (modal) {
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+            if (modal.style.display === 'flex' && inputField) inputField.focus();
+        }
+    }
+
     function bicara(teks) {
         window.speechSynthesis.cancel();
         const msg = new SpeechSynthesisUtterance(teks);
@@ -976,7 +1080,6 @@ updateFilters();
         window.speechSynthesis.speak(msg);
     }
 
-    // --- FITUR MIC (SPEECH TO TEXT) ---
     function mulaiVoice() {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) return alert("Browser tidak mendukung suara");
@@ -985,44 +1088,44 @@ updateFilters();
         recognition.lang = 'id-ID';
         const micBtn = document.getElementById('mic-btn');
 
-        recognition.onstart = () => micBtn.classList.add('listening');
-        recognition.onend = () => micBtn.classList.remove('listening');
+        recognition.onstart = () => { if(micBtn) micBtn.classList.add('listening'); };
+        recognition.onend = () => { if(micBtn) micBtn.classList.remove('listening'); };
         
         recognition.onresult = (event) => {
-            inputField.value = event.results[0][0].transcript;
-            tanyaAI();
+            if (inputField) {
+                inputField.value = event.results[0][0].transcript;
+                tanyaAI();
+            }
         };
         recognition.start();
     }
 
     async function tanyaAI() {
-    const input = document.getElementById('user-input');
-    const chatWindow = document.getElementById('chat-window');
-    const pesan = input.value.trim();
-    if(!pesan) return;
+        if (!inputField || !chatWindow) return;
+        const pesan = inputField.value.trim();
+        if(!pesan) return;
 
-    // PASTIKAN CLASS NYA SEPERTI INI: bubble user
-    chatWindow.innerHTML += `<div class="bubble user">${pesan}</div>`;
-    input.value = '';
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-
-    try {
-        const response = await fetch('<?= base_url("ai/proses") ?>', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'pesan=' + encodeURIComponent(pesan)
-        });
-        const data = await response.json();
-        
-        // PASTIKAN CLASS NYA SEPERTI INI: bubble ai
-        chatWindow.innerHTML += `<div class="bubble ai">${data.jawaban}</div>`;
+        chatWindow.innerHTML += `<div class="bubble user">${pesan}</div>`;
+        inputField.value = '';
         chatWindow.scrollTop = chatWindow.scrollHeight;
-    } catch (e) {
-        console.error(e);
-    }
-}
 
-    inputField.addEventListener("keydown", (e) => { if (e.key === "Enter") tanyaAI(); });
+        try {
+            const response = await fetch('<?= base_url("ai/proses") ?>', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'pesan=' + encodeURIComponent(pesan)
+            });
+            const data = await response.json();
+            chatWindow.innerHTML += `<div class="bubble ai">${data.jawaban}</div>`;
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    if (inputField) {
+        inputField.addEventListener("keydown", (e) => { if (e.key === "Enter") tanyaAI(); });
+    }
 </script>
 
 </body>
