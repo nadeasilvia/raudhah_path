@@ -45,7 +45,7 @@ class Home extends BaseController
         $builder->join('travel_agents t', 't.id = p.agent_id', 'left');
 
         if (!empty($search)) $builder->like('p.nama_paket', $search);
-        if (!empty($paket_type)) $builder->where('p.jenis_paket', $paket_type);
+        if (!empty($paket_type)) $builder->where('p.kategori', $paket_type);
         if (!empty($durasi)) $builder->where('p.durasi_hari', $durasi);
         if (!empty($maskapai)) $builder->where('p.airline_id', $maskapai);
         
@@ -108,4 +108,20 @@ class Home extends BaseController
         $data['view'] = 'contact'; 
         return view('umrah_list', $data);
     }
+    public function travel_resmi()
+{
+    $data = [
+        'title' => 'Travel Resmi - Raudhah Path',
+        'view'  => 'travel_resmi' // Ini kunci untuk memanggil bagian HTML nanti
+    ];
+    return view('umrah_list', $data); 
+}
+public function perbandingan()
+{
+    $data = [
+        'title' => 'Perbandingan Mudah - Raudhah Path',
+        'view'  => 'perbandingan' // Kunci untuk menampilkan HTML perbandingan
+    ];
+    return view('umrah_list', $data);
+}
 }

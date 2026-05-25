@@ -12,9 +12,10 @@ $routes->get('packages', 'Home::packages');   // Mode: Packages (List & Filter)
 $routes->get('about', 'Home::about');         // Mode: About Us
 $routes->get('contact', 'Home::contact');     // Mode: Contact Us
 
-// --- Link Baru dari Kartu Fitur (Home) ---
-$routes->get('travel/resmi', 'Home::packages');    // Mengarah ke list paket resmi
-$routes->get('bandingkan/paket', 'Home::packages'); // Mengarah ke list perbandingan
+// --- Halaman Baru (Halaman Mandiri) ---
+// Rute ini sekarang mengarah ke fungsi tersendiri, bukan lagi ke Home::packages
+$routes->get('travel_resmi', 'Home::travel_resmi'); 
+$routes->get('perbandingan', 'Home::perbandingan');
 
 // --- Detail Paket ---
 $routes->get('packages/detail/(:num)', 'Home::detail/$1'); 
