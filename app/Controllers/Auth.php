@@ -25,11 +25,7 @@ class Auth extends BaseController
         ];
 
         if ($model->save($data)) {
-            session()->set([
-                'isLoggedIn' => true, 
-                'username'   => $data['username']
-            ]);
-            return redirect()->to(base_url('/'))->with('success', 'Registrasi berhasil. Selamat Datang!');
+            return redirect()->to(base_url('/auth'))->with('success', 'Registrasi berhasil. Silakan login.');
         }
 
         return redirect()->back()->with('error', 'Gagal melakukan registrasi.');
@@ -41,22 +37,18 @@ class Auth extends BaseController
         $username = $this->request->getPost('username');
         $password = $this->request->getPost('password');
 
-        // 1. Cari user berdasarkan username
         $user = $model->where('username', $username)->first();
 
-        // 2. Cek apakah user ada dan password cocok
         if ($user && password_verify($password, $user['password'])) {
-            
-            // 3. Set Session jika data valid
             session()->set([
+                'id'         => $user['id'],
                 'isLoggedIn' => true,
                 'username'   => $user['username'],
                 'email'      => $user['email']
             ]);
 
-            return redirect()->to(base_url('/'))->with('success', 'Selamat datang kembali, ' . $user['username'] . '!');
+            return redirect()->to(base_url('/'))->with('success', 'Selamat datang!');
         } else {
-            // 4. Jika gagal, kembalikan ke halaman login dengan pesan error
             return redirect()->back()->with('error', 'Username atau Password salah.');
         }
     }

@@ -4,96 +4,151 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profil - Raudhah Path</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        :root { 
+            --primary-navy: #1e3a8a; 
+            --text-dark: #1e293b; 
+            --bg: #f8fafc; 
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg); 
+            margin: 0; 
+            padding: 0; 
+            min-height: 100vh; 
+        }
+        
+        /* Branding Kiri Atas */
+        .brand { 
+            padding: 40px 50px; 
+            font-weight: 800; 
+            font-size: 24px; 
+            color: var(--primary-navy); 
+        }
+
+        /* Container Utama */
+        .container { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 100%; 
+            margin: 0 auto; 
+            padding: 20px 20px 50px 20px; 
+        }
+
+        /* Form Card Styling */
+        .card { 
+            background: #fff; 
+            padding: 40px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            max-width: 500px; 
+            width: 100%; 
+        }
+        
+        /* Typography & Form Elements */
+        h2 { font-size: 20px; margin-bottom: 5px; text-align: center; color: var(--text-dark); }
+        .subtitle { text-align: center; color: #64748b; font-size: 14px; margin-bottom: 25px; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.75rem; font-weight: 700; color: #475569; margin-bottom: 8px; text-transform: uppercase; }
+        
+        input, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus { border-color: var(--primary-navy); outline: none; }
+        
+        .row { display: flex; gap: 15px; }
+        .col { flex: 1; }
+        
+        /* Button */
+        button { 
+            width: 100%; 
+            background: var(--primary-navy); 
+            color: white; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            margin-top: 10px;
+        }
+        button:hover { background: #172554; }
+        
+        /* Footer Link */
+        .back-btn { 
+            display: block; 
+            text-align: center; 
+            margin-top: 20px; 
+            color: #64748b; 
+            text-decoration: none; 
+            font-size: 0.85rem; 
+        }
+        .back-btn:hover { color: var(--primary-navy); }
     </style>
 </head>
-<body class="bg-[#fcfcfc]">
+<body>
 
-    <!-- Navbar yang lebih Rapat & Simetris -->
-    <nav class="flex justify-between items-center px-6 md:px-10 py-3 bg-white border-b border-gray-100 shadow-sm">
-        <div class="flex items-center">
-            <div class="text-xl font-bold text-[#1e3a5a] flex items-center">
-                <span class="text-[#c29047] text-2xl mr-1">𓏬</span> Raudhah Path
-            </div>
-        </div>
-        
-        <div class="flex items-center">
-            <a href="<?= base_url('/') ?>" class="flex items-center gap-1.5 text-[13px] font-bold text-gray-500 hover:text-[#1e3a5a] transition-all">
-                <span>←</span> 
-                <span>Beranda</span>
-            </a>
-        </div>
-    </nav>
+    <div class="brand">Raudhah Path</div>
 
-    <main class="container mx-auto px-4 py-6">
-        <div class="max-w-2xl mx-auto">
-            <div class="mb-6 text-center md:text-left">
-                <h1 class="text-2xl font-bold text-[#1e3a5a]">Lengkapi Profil Travel</h1>
-                <p class="text-sm text-gray-500 mt-1">Informasi ini diperlukan untuk memvalidasi dokumen keberangkatan Anda.</p>
-            </div>
+    <div class="container">
+        <div class="card">
+            <h2>Lengkapi Profil Travel</h2>
+            <p class="subtitle">Informasi ini diperlukan untuk memvalidasi dokumen keberangkatan Anda.</p>
+            
+            <form action="<?= base_url('user/update_profile'); ?>" method="POST">
+                <?= csrf_field(); ?>
 
-            <div class="bg-white p-6 md:p-8 rounded-[24px] shadow-sm border border-gray-100">
-                <form action="<?= base_url('user/update_profile') ?>" method="POST">
-                    <!-- Menambahkan CSRF Protection untuk keamanan CodeIgniter 4 -->
-                    <?= csrf_field() ?>
+                <div class="form-group">
+                    <label>NAMA LENGKAP (SESUAI PASPOR)</label>
+                    <input type="text" name="nama_lengkap" 
+                           value="<?= isset($profile['nama_lengkap']) ? $profile['nama_lengkap'] : '' ?>" 
+                           placeholder="Aris Maulana" required>
+                </div>
 
-                    <div class="space-y-5">
-                        
-                        <!-- Input Nama Lengkap -->
-                        <div>
-                            <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Nama Lengkap (Sesuai Paspor)</label>
-                            <input type="text" name="full_name" 
-                                class="w-full bg-gray-50 border border-gray-100 py-3 px-4 rounded-xl focus:ring-2 focus:ring-[#c29047] focus:bg-white outline-none transition-all text-sm"
-                                placeholder="Masukkan nama lengkap Anda"
-                                value="<?= esc($user['full_name'] ?? '') ?>">
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <!-- Input Nomor Paspor -->
-                            <div>
-                                <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Nomor Paspor</label>
-                                <input type="text" name="passport_number" 
-                                    class="w-full bg-gray-50 border border-gray-100 py-3 px-4 rounded-xl focus:ring-2 focus:ring-[#c29047] focus:bg-white outline-none transition-all text-sm"
-                                    placeholder="Contoh: A 1234567"
-                                    value="<?= esc($user['passport_number'] ?? '') ?>">
-                            </div>
-                            <!-- Input Nomor WhatsApp -->
-                            <div>
-                                <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Nomor WhatsApp</label>
-                                <input type="tel" name="phone" 
-                                    class="w-full bg-gray-50 border border-gray-100 py-3 px-4 rounded-xl focus:ring-2 focus:ring-[#c29047] focus:bg-white outline-none transition-all text-sm"
-                                    placeholder="0812xxxx"
-                                    value="<?= esc($user['phone'] ?? '') ?>">
-                            </div>
-                        </div>
-
-                        <!-- Input Alamat Domisili -->
-                        <div>
-                            <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Alamat Domisili</label>
-                            <textarea name="address" rows="3"
-                                class="w-full bg-gray-50 border border-gray-100 py-3 px-4 rounded-xl focus:ring-2 focus:ring-[#c29047] focus:bg-white outline-none transition-all text-sm"
-                                placeholder="Tuliskan alamat lengkap sesuai KTP"><?= esc($user['address'] ?? '') ?></textarea>
-                        </div>
-
-                        <div class="pt-4">
-                            <button type="submit" 
-                                class="w-full bg-[#1e3a5a] text-white font-bold py-3.5 rounded-xl hover:bg-[#162d46] transform active:scale-[0.98] transition-all shadow-md">
-                                Simpan Perubahan Profil
-                            </button>
-                        </div>
-                        
+                <div class="row">
+                    <div class="col form-group">
+                        <label>NOMOR PASPOR</label>
+                        <input type="text" name="nomor_paspor" 
+                               value="<?= isset($profile['nomor_paspor']) ? $profile['nomor_paspor'] : '' ?>" 
+                               placeholder="A 1234567">
                     </div>
-                </form>
-            </div>
+                    <div class="col form-group">
+                        <label>NOMOR WHATSAPP</label>
+                        <input type="text" name="nomor_whatsapp" 
+                               value="<?= isset($profile['nomor_whatsapp']) ? $profile['nomor_whatsapp'] : '' ?>" 
+                               placeholder="0812 3456 7890">
+                    </div>
+                </div>
 
-            <p class="text-center text-[11px] text-gray-400 mt-6 uppercase tracking-widest">
-                Data Anda aman dan terenkripsi secara otomatis
-            </p>
+                <div class="form-group">
+                    <label>ALAMAT DOMISILI</label>
+                    <textarea name="alamat_domisili" placeholder="Jl. Contoh No. 123..."><?= isset($profile['alamat_domisili']) ? $profile['alamat_domisili'] : '' ?></textarea>
+                </div>
+
+                <button type="submit">Simpan Perubahan Profil</button>
+                <a href="<?= base_url('/'); ?>" class="back-btn">← Kembali ke Beranda</a>
+            </form>
         </div>
-    </main>
+    </div>
+
+    <?php if(session()->getFlashdata('message')): ?>
+        <script>
+            Swal.fire({
+                title: 'Berhasil!',
+                text: '<?= session()->getFlashdata('message') ?>',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#1e3a8a'
+            });
+        </script>
+    <?php endif; ?>
 
 </body>
 </html>

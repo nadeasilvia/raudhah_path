@@ -36,21 +36,25 @@
             <a href="<?= base_url('contact') ?>" class="<?= ($view == 'contact') ? 'text-[#c29047] border-b-2 border-[#c29047]' : 'hover:text-[#c29047]' ?> transition">Contact Us</a>
         </div>
         <div class="flex gap-4 items-center">
-            <?php if (session()->get('isLoggedIn')): ?>
-                <div class="flex items-center gap-3">
-                    <div class="flex flex-col items-end leading-tight">
-                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Profil Saya</span>
-                        <a href="<?= base_url('user/profile') ?>" class="text-sm font-bold text-[#1e3a5a]"><?= session()->get('username') ?></a>
-                    </div>
-                    <div class="w-10 h-10 bg-[#c29047] rounded-full flex items-center justify-center text-white font-extrabold shadow-sm">
-                        <?= strtoupper(substr(session()->get('username'), 0, 1)) ?>
-                    </div>
+    <?php if (session()->get('isLoggedIn')): ?>
+        <div class="flex items-center gap-3">
+            <div class="flex flex-col items-end leading-tight">
+                <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">Profil Saya</span>
+                <div class="flex items-center gap-2">
+                    <a href="<?= base_url('user/profile') ?>" class="text-sm font-bold text-[#1e3a5a]"><?= session()->get('username') ?></a>
+                    <span class="text-gray-300 text-[10px]">|</span>
+                    <a href="<?= base_url('auth/logout') ?>" class="text-[10px] text-red-500 font-bold hover:text-red-700 underline">Logout</a>
                 </div>
-            <?php else: ?>
-                <a href="<?= base_url('auth') ?>" class="text-sm font-bold text-[#1e3a5a]">Login</a>
-                <a href="#" class="bg-[#1e3a5a] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg hover:bg-[#162d46] transition">Beli List</a>
-            <?php endif; ?>
+            </div>
+            <div class="w-10 h-10 bg-[#c29047] rounded-full flex items-center justify-center text-white font-extrabold shadow-sm">
+                <?= strtoupper(substr(session()->get('username'), 0, 1)) ?>
+            </div>
         </div>
+    <?php else: ?>
+        <a href="<?= base_url('auth') ?>" class="text-sm font-bold text-[#1e3a5a]">Login</a>
+        <a href="#" class="bg-[#1e3a5a] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg hover:bg-[#162d46] transition">Beli List</a>
+    <?php endif; ?> 
+</div>
     </nav>
 
     <?php if ($view == 'home'): ?>

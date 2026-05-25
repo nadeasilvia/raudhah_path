@@ -6,42 +6,52 @@ class User extends BaseController
 {
     public function index()
     {
-        $userId = session()->get('id'); // Menggunakan 'id'
+        $userId = session()->get('id');
         $profileModel = new \App\Models\ProfileModel();
-        
-        // Cari data profil berdasarkan user_id
+
+        // Cari data profil
         $profileData = $profileModel->where('user_id', $userId)->first();
 
+        // Pastikan ini memanggil file 'user/edit_profile'
         return view('user/edit_profile', ['profile' => $profileData]);
     }
 
     public function update()
     {
-        // PERBAIKAN: Disamakan menggunakan 'id' sesuai session login kamu
-        $userId = session()->get('id'); 
-       // 2. MASUKKAN VALIDASINYA DI SINI
-if (!$userId) {
-    return redirect()->to(base_url('/'))->with('error', 'Silakan login terlebih dahulu.');
-}
-        $profileModel = new \App\Models\ProfileModel();
-        
+        $model = new \App\Models\ProfileModel();
+        $userId = session()->get('id');
+
         $data = [
-            'user_id'         => $userId,
-            'full_name'       => $this->request->getPost('full_name'),
-            'passport_number' => $this->request->getPost('passport_number'),
-            'phone'           => $this->request->getPost('phone'),
-            'address'         => $this->request->getPost('address'),
+            'nama_lengkap'    => $this->request->getPost('nama_lengkap'),
+            'nomor_paspor'    => $this->request->getPost('nomor_paspor'),
+            'nomor_whatsapp'  => $this->request->getPost('nomor_whatsapp'),
+            'alamat_domisili' => $this->request->getPost('alamat_domisili'),
         ];
 
-        // Cek apakah profil sudah ada atau belum
-        $existingProfile = $profileModel->where('user_id', $userId)->first();
+        $existing = $model->where('user_id', $userId)->first();
 
-        if ($existingProfile) {
-            $profileModel->update($existingProfile['id'], $data);
+        if ($existing) {
+            $model->update($existing['id'], $data);
         } else {
-            $profileModel->insert($data);
+            $data['user_id'] = $userId;
+            $model->insert($data);
         }
 
-        return redirect()->to(base_url('/'))->with('success', 'Profil travel berhasil diperbarui!');
+        // Menambahkan pesan untuk pop-up
+        return redirect()->to('/user/profile')->with('message', 'Data profil berhasil disimpan!');
     }
+    public function profile() {
+    $userId = session()->get('id');
+    
+    // Debugging: Cek apakah ID user terbaca
+    echo "ID User di Session: " . $userId; 
+    
+    $profileModel = new \App\Models\ProfileModel();
+    $data = $profileModel->where('user_id', $userId)->first();
+    
+    // Debugging: Cek apakah kueri menghasilkan data
+    var_dump($data); die(); 
+
+    return view('user/profile', ['profile' => $data]);
+}
 }
