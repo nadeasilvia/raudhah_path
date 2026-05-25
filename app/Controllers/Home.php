@@ -8,23 +8,32 @@ class Home extends BaseController
      * HALAMAN UTAMA (HOME)
      */
     public function index()
-    {
-        $db = \Config\Database::connect();
-        
-        $builder = $db->table('packages p');
-        $builder->select('p.*, a.nama_maskapai, t.nama_agent');
-        $builder->join('airlines a', 'a.id = p.airline_id', 'left');
-        $builder->join('travel_agents t', 't.id = p.agent_id', 'left');
-        $builder->limit(4); // Hanya ambil 4 paket untuk preview di Home
+{
+    $db = \Config\Database::connect();
+    
+    // 1. Ambil data paket
+    $builder = $db->table('packages p');
+    $builder->select('p.*, a.nama_maskapai, t.nama_agent');
+    $builder->join('airlines a', 'a.id = p.airline_id', 'left');
+    $builder->join('travel_agents t', 't.id = p.agent_id', 'left');
+    $builder->limit(4); 
+    $data['packages'] = $builder->get()->getResult();
+    $data['durasi'] = $db->table('packages')->select('durasi_hari')->distinct()->orderBy('durasi_hari', 'ASC')->get()->getResultArray();
 
-        $data['packages']    = $builder->get()->getResult();
-        $data['all_agents']  = $db->table('travel_agents')->get()->getResult();
-        
-        // SAKLAR: Aktifkan tampilan Home
-        $data['view'] = 'home'; 
+    // TAMBAHKAN INI: Ambil Kategori (Jenis Paket)
+    $data['kategori'] = $db->table('packages')->select('kategori')->distinct()->get()->getResultArray();
+// 3. Ambil Semua Maskapai (untuk filter Maskapai)
+    $data['all_airlines'] = $db->table('airlines')->get()->getResult();
+    // 2. Ambil data agen
+    $data['all_agents'] = $db->table('travel_agents')->get()->getResult();
+    
+    // 3. Ambil data durasi unik untuk filter (GABUNGAN BARU)
+    // Jika cara builder tetap gagal, coba cara SQL murni:
+    // 4. SAKLAR: Aktifkan tampilan Home
+    $data['view'] = 'home'; 
 
-        return view('umrah_list', $data);
-    }
+    return view('umrah_list', $data);
+}
 
     /**
      * HALAMAN PACKAGES (LIST & FILTER)
@@ -58,6 +67,12 @@ class Home extends BaseController
         $data['all_agents']   = $db->table('travel_agents')->get()->getResult();
         $data['keyword']      = $search;
 
+        $query = $db->query("SELECT DISTINCT durasi_hari FROM packages WHERE durasi_hari IS NOT NULL ORDER BY durasi_hari ASC");
+        $data['durasi'] = $query->getResultArray();
+        $data['durasi'] = $db->table('packages')->select('durasi_hari')->distinct()->orderBy('durasi_hari', 'ASC')->get()->getResultArray();
+        $data['kategori'] = $db->table('packages')->select('kategori')->distinct()->get()->getResultArray();
+        // Tambahkan ini di dalam fungsi index() dan packages()
+        $data['all_airlines'] = $db->table('airlines')->orderBy('nama_maskapai', 'ASC')->get()->getResult();
         // SAKLAR: Aktifkan tampilan Packages
         $data['view'] = 'packages'; 
 
@@ -124,4 +139,5 @@ public function perbandingan()
     ];
     return view('umrah_list', $data);
 }
+
 }
