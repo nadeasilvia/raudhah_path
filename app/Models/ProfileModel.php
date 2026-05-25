@@ -7,5 +7,5 @@ class ProfileModel extends Model
 {
     protected $table = 'user_profiles';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['user_id', 'full_name', 'passport_number', 'phone', 'address'];
+    protected $allowedFields = ['user_id', 'nama_lengkap', 'nomor_paspor', 'nomor_whatsapp', 'alamat_domisili'];
 }
